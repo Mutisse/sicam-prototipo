@@ -1,0 +1,89 @@
+============================================================
+SICAM — CREDENCIAIS DE TESTE
+Ficheiro de apoio ao desenvolvimento
+============================================================
+
+NOTA: A autenticação é mock (sem backend).
+      O perfil é detectado pelo E-MAIL (parte antes do @).
+      A palavra-passe pode ser qualquer coisa.
+
+------------------------------------------------------------
+PERFIS QUE USAM O DASHBOARD GENÉRICO (DashboardView)
+------------------------------------------------------------
+
+⭐ CHEFE DE POSTO
+   E-mail:   chefe@sicam.gov.mz
+   Password: chefe
+   Vai para: /chefe/dashboard
+   Menu:     Dashboard · Agentes · Patrulhas · Aprovações
+
+🔵 INATRO
+   E-mail:   inatro@sicam.gov.mz
+   Password: inatro
+   Vai para: /inatro/painel
+   Menu:     Painel · Veículos · Inspecções · Exportação
+
+🟢 GESTMUL
+   E-mail:   gestmul@sicam.gov.mz
+   Password: gestmul
+   Vai para: /gestmul/painel
+   Menu:     Painel · Multas · Pagamentos · Relatórios
+
+🟡 ISSM
+   E-mail:   issm@sicam.gov.mz
+   Password: issm
+   Vai para: /issm/painel
+   Menu:     Painel · Apólices · Sinistros · Validação
+
+🔴 PRM
+   E-mail:   prm@sicam.gov.mz
+   Password: prm
+   Vai para: /prm/painel
+   Menu:     Painel · Hotlist · Abordagens · Alertas
+
+------------------------------------------------------------
+PERFIS COM DASHBOARD PRÓPRIA (não usam o genérico)
+------------------------------------------------------------
+
+⚙️ ADMINISTRADOR
+   E-mail:   admin@sicam.gov.mz
+   Password: admin
+   Vai para: /admin/dashboard
+   Menu:     Dashboard · Utilizadores · Postos · Dispositivos
+             · Integrações · Auditoria · Relatórios · Monitorização
+
+👮 AGENTE DE TRÂNSITO
+   E-mail:   agente@sicam.gov.mz
+   Password: agente
+   Vai para: /agente/inicio
+   Menu:     Início · Consultar · Autos · Hotlist · Clonagem · Mapa
+   (Layout móvel próprio — a implementar)
+
+👤 CIDADÃO
+   E-mail:   cidadao@sicam.gov.mz
+   Password: cidadao
+   Vai para: /cidadao/portal
+   (Portal próprio — a implementar)
+
+------------------------------------------------------------
+NOTAS
+------------------------------------------------------------
+
+1. Se escreveres um e-mail que NÃO corresponde a nenhum
+   perfil (ex: joao@sicam.gov.mz), o sistema entra como
+   ADMIN por defeito.
+
+2. O perfil válido é detectado pela parte antes do @:
+      admin@...    → admin
+      chefe@...    → chefe
+      inatro@...   → inatro
+      gestmul@...  → gestmul
+      issm@...     → issm
+      prm@...      → prm
+      agente@...   → agente
+      cidadao@...  → cidadao
+
+3. Quando o backend estiver ligado (http://127.0.0.1:8000),
+   estas credenciais serão substituídas por autenticação real.
+
+============================================================

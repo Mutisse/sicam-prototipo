@@ -1,42 +1,70 @@
-import { defineRouter } from "#q-app";
-import { routes, handleHotUpdate } from "vue-router/auto-routes";
-import {
-  createMemoryHistory,
-  createRouter,
-  createWebHashHistory,
-  createWebHistory
-} from "vue-router";
+import { createRouter, createWebHashHistory } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
+import { createPinia, type Pinia } from 'pinia'
+import { useAuthStore } from '../stores/auth'
+import type { Perfil } from '../css/design/palette'
 
-/*
- * If not building with SSR mode, you can
- * directly export the Router instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Router instance.
- */
+import { routesDesktop } from './routes.desktop'
+import { routesMobile } from './routes.mobile'
+import { routesPortal } from './routes.portal'
 
-export default defineRouter((/* { store, ssrContext } */) => {
-  const createHistory = import.meta.env.QUASAR_SERVER
-    ? createMemoryHistory
-    : import.meta.env.QUASAR_VUE_ROUTER_MODE === "history"
-      ? createWebHistory
-      : createWebHashHistory;
+// ============================================================
+// SICAM — Router principal
+// ============================================================
 
-  const Router = createRouter({
-    scrollBehavior: () => ({ left: 0, top: 0 }),
+const routesAuth: RouteRecordRaw[] = [
+  {
+    path: '/login',
+    component: () => import('../auth/layouts/AuthLayout.vue'),
+    children: [
+      { path: '', name: 'login', component: () => import('../auth/pages/login.vue') },
+    ],
+  },
+  {
+    path: '/:catchAll(.*)*',
+    name: 'not-found',
+    component: () => import('../auth/pages/ErrorNotFound.vue'),
+  },
+]
+
+const routes: RouteRecordRaw[] = [
+  ...routesAuth,
+  ...routesDesktop,
+  ...routesMobile,
+  ...routesPortal,
+]
+
+// Pinia — instância ÚNICA partilhada
+export const pinia: Pinia = createPinia()
+
+export default function () {
+  const router = createRouter({
+    history: createWebHashHistory(),
     routes,
+  })
 
-    // Leave this as is and make changes in quasar.conf.js instead!
-    // quasar.conf.js -> build -> vueRouterMode
-    // quasar.conf.js -> build -> publicPath
-    history: createHistory(import.meta.env.QUASAR_VUE_ROUTER_BASE)
-  });
+  router.beforeEach((to) => {
+    const auth = useAuthStore(pinia)
+    if (!auth.autenticado) auth.restaurar()
 
-  // enable HMR for it
-  if (import.meta.hot) {
-    handleHotUpdate(Router);
-  }
+    if (to.path === '/login') {
+      if (auth.autenticado) return { path: auth.rotaInicial }
+      return true
+    }
 
-  return Router;
-});
+    if (to.path.startsWith('/cidadao')) return true
+
+    if (!auth.autenticado) return { path: '/login' }
+
+    const perfisPermitidos = to.meta.perfis as Perfil[] | undefined
+    if (perfisPermitidos && auth.perfil) {
+      if (!perfisPermitidos.includes(auth.perfil)) {
+        return { path: auth.rotaInicial }
+      }
+    }
+
+    return true
+  })
+
+  return router
+}
